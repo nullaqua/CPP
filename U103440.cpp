@@ -11,7 +11,7 @@ struct Node
     ll tag;
     ll sum;
 
-    Node(ll l=0,ll r=0) : l(l),r(r)
+    explicit Node(ll l=0,ll r=0) : l(l),r(r)
     {
         lc=rc=0;
         sum=tag=0;
