@@ -2,7 +2,7 @@
 
 using namespace std;
 typedef long long ll;
-const int MAXN = 4000000;
+const int MAXN=4000000;
 
 struct Node
 {
@@ -315,6 +315,5 @@ int main()
         assert(tree.ed<MAXN);
     }
     cout<<"Peddy";
-    //cout<<(clock()-start)<<'\n';
     return 0;
 }
