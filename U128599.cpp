@@ -6,7 +6,7 @@ typedef long long ll;
 typedef unsigned long long ull;
 
 int n;
-int a[100005];
+int edge[100005];
 int stck[100005];
 int ed=0;
 
@@ -24,18 +24,18 @@ int main()
         cin>>n;
         for (int i=1;i<=n;i++)
         {
-            cin>>a[i];
+            cin>>edge[i];
         }
         int ans=0;
         for (int i=1;i<=n;i++)
         {
-            while (ed&&stck[ed]>a[i])
+            while (ed&&stck[ed]>edge[i])
             {
                 ed--;
             }
-            if (!ed||stck[ed]!=a[i])
+            if (!ed||stck[ed]!=edge[i])
             {
-                stck[++ed]=a[i];
+                stck[++ed]=edge[i];
                 ans++;
             }
         }

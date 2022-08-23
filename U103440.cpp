@@ -55,14 +55,14 @@ struct Tree
         if (!node[p].lc)
         {
             node[p].lc=buildNode(node[p].l,(node[p].l+node[p].r)>>1);
-            //cout<<p<<"	creat left c:	"<<node[p].lc<<' '<<node[p].l<<' '<<((node[p].l+node[p].r)>>1)<<'\n';
+            //cout<<p<<"	creat left edge:	"<<node[p].lc<<' '<<node[p].l<<' '<<((node[p].l+node[p].r)>>1)<<'\n';
         }
         addTag(node[p].lc,node[p].tag);
 
         if (!node[p].rc)
         {
             node[p].rc=buildNode(((node[p].l+node[p].r)>>1)+1,node[p].r);
-            //cout<<p<<"	creat right c:	"<<node[p].rc<<' '<<(node[p].l+node[p].r>>1)+1<<' '<<node[p].r<<'\n';
+            //cout<<p<<"	creat right edge:	"<<node[p].rc<<' '<<(node[p].l+node[p].r>>1)+1<<' '<<node[p].r<<'\n';
         }
         addTag(node[p].rc,node[p].tag);
 

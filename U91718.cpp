@@ -50,7 +50,7 @@ int main()
             x=(x+n-t)%n;
             y=(y+n-t)%n;
         }
-        //cout<<a<<' '<<x<<' '<<b<<' '<<y<<'\n';
+        //cout<<edge<<' '<<x<<' '<<b<<' '<<y<<'\n';
         t=(a+b)>>1;
         if ((x>t||x<a)&&(y<t||y>b)&&!(abs(a-b)&1))
         {
@@ -64,13 +64,13 @@ int main()
             cout<<"NO\n";
             continue;
         }
-        //cout<<"a: "<<a<<' '<<(a+len/2+abs(a-b))%n<<'\n';
+        //cout<<"edge: "<<edge<<' '<<(edge+len/2+abs(edge-b))%n<<'\n';
         if (in(x,a,(a+len/2+abs(a-b))%n,true))
         {
             cout<<"NO\n";
             continue;
         }
-        //cout<<"b: "<<b<<' '<<(b+len/2+abs(a-b))%n<<'\n';
+        //cout<<"b: "<<b<<' '<<(b+len/2+abs(edge-b))%n<<'\n';
         if (in(y,b,(b+len/2+abs(a-b))%n,false))
         {
             cout<<"NO\n";
