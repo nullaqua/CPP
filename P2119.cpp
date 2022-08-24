@@ -8,8 +8,6 @@ ll n,m;
 ll b[40005];
 ll cnt[15005];
 ll edge[15005];
-ll b[15005];
-ll edge[15005];
 ll d[15005];
 
 int main()
