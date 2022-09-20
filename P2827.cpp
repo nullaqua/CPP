@@ -5,13 +5,13 @@ using namespace std;
 typedef long long ll;
 typedef unsigned long long ull;
 
-ll n,m,q,u,v,t;
+ll n,m,Q,u,v,T;
 ll a[100005];
 queue<ll> que[3];
 
 int main()
 {
-    cin>>n>>m>>q>>u>>v>>t;
+    cin>>n>>m>>Q>>u>>v>>T;
     for (int i=1;i<=n;i++)
     {
         cin>>a[i];
@@ -43,12 +43,12 @@ int main()
         }
         ans+=ss;
 
-        if (!(i%t))
+        if (!(i%T))
         {
             cout<<ans<<' ';
         }
         ll x=ans*u/v,y=ans-x;
-        ss+=q;
+        ss+=Q;
         x-=ss;
         y-=ss;
         que[1].push(x);
@@ -67,11 +67,11 @@ int main()
         }
     }
     sort(ans+1,ans+len+1);
-    /*for (ll i=t;i<=n+m;i+=t)
+    /*for (ll i=T;i<=n+m;i+=T)
     {
         cout<<ans[i]<<' ';
     }*/
-    for (ll i=n+m+1-t;i>0;i-=t)
+    for (ll i=n+m+1-T;i>0;i-=T)
     {
         cout<<ans[i]<<' ';
     }

@@ -8,7 +8,7 @@ ll n,m;
 ll b[40005];
 ll cnt[15005];
 ll edge[15005];
-ll d[15005];
+ll c[15005];
 
 int main()
 {
@@ -25,7 +25,7 @@ int main()
         {
             sum+=cnt[j-7*i-1]*cnt[j-9*i-1];
             edge[j-i]+=cnt[j]*sum;
-            d[j]+=cnt[j-i]*sum;
+            c[j]+=cnt[j-i]*sum;
         }
         sum=0;
         for (int j=n-i*9-1;j>=1;j--)
@@ -37,7 +37,7 @@ int main()
     }
     for (int i=1;i<=m;i++)
     {
-        cout<<edge[b[i]]<<" "<<b[b[i]]<<" "<<edge[b[i]]<<" "<<d[b[i]]<<'\n';
+        cout<<edge[b[i]]<<" "<<b[b[i]]<<" "<<edge[b[i]]<<" "<<c[b[i]]<<'\n';
     }
     return 0;
 }

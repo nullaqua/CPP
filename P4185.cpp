@@ -26,7 +26,7 @@ struct
     {
         if (isSameType(*this,tmp))
         {
-            return w>tmp.w;
+            return w>tmp.b;
         }
         return false;
     }

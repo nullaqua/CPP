@@ -9,7 +9,7 @@ ll n,m,k;
 ll edge[405][405];
 ll sum[405][405];
 ll s[405];
-ll d[1000005];
+ll c[1000005];
 
 int main()
 {
@@ -32,14 +32,14 @@ int main()
             {
                 s[kk]=sum[j][kk]-sum[i-1][kk]+k;
                 s[kk]%=k;
-                ans+=d[s[kk]]++;
+                ans+=c[s[kk]]++;
             }
-            ans+=d[0];
+            ans+=c[0];
             for (int kk=1;kk<=m;kk++)
             {
-                d[s[kk]]=0;
+                c[s[kk]]=0;
             }
-            d[0]=0;
+            c[0]=0;
         }
     }
     cout<<ans;

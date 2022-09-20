@@ -10,7 +10,7 @@ ll cnt,sum;
 ll edge[1000005];
 ll b[1000005];
 ll c[1000005];
-ll d[1000005];
+ll c[1000005];
 
 int main()
 {
@@ -34,19 +34,19 @@ int main()
         while (r<l||cnt<m&&r<n)
         {
             r++;
-            if (!d[edge[r]])
+            if (!c[edge[r]])
             {
                 cnt++;
             }
-            d[edge[r]]++;
+            c[edge[r]]++;
             sum+=b[r];
         }
         if (cnt==m)
         {
             ans=min(ans,sum);
         }
-        d[edge[l]]--;
-        if (!d[edge[l]])
+        c[edge[l]]--;
+        if (!c[edge[l]])
         {
             cnt--;
         }
