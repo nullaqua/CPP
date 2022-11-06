@@ -1,151 +1,65 @@
 #include <bits/stdc++.h>
 
 using namespace std;
+typedef long long ll;
+typedef unsigned long long ull;
 
-#define READ_BUFFER_SIZE 100000LL
-#define PRINT_BUFFER_SIZE 100000LL
-
-struct
+class StreamOperator
 {
-}enter,push;
+};
+
+StreamOperator *push=new StreamOperator();
+StreamOperator *enter=new StreamOperator();
 
 class LanzhiStream
 {
+#define READ_BUFFER_SIZE 100000LL
+#define PRINT_BUFFER_SIZE 100000LL
 private:
-    LanzhiStream()=default;
-    LanzhiStream(const LanzhiStream&);
-    LanzhiStream&operator=(const LanzhiStream&a)=default;
-
-    char readBuffer[READ_BUFFER_SIZE],*r1=readBuffer+READ_BUFFER_SIZE,*rend=readBuffer+READ_BUFFER_SIZE;
-    char printBuffer[PRINT_BUFFER_SIZE],*pend=printBuffer;
+    char readBuffer[READ_BUFFER_SIZE]{},*r1=readBuffer+READ_BUFFER_SIZE,*rend=readBuffer+READ_BUFFER_SIZE;
+    char printBuffer[PRINT_BUFFER_SIZE]{},*p1=printBuffer;
+    const char *pend=printBuffer+PRINT_BUFFER_SIZE;
     bool isNormal=true;
-    static LanzhiStream *stream;
 
-public:
-    static LanzhiStream &getStream()
+    static void onStop()
     {
-        if (stream==nullptr)
-        {
-            stream=new LanzhiStream;
-        }
-        return *stream;
+        getStream().Push();
     }
 
-    inline bool hasNext()
+    LanzhiStream()
     {
-        if (r1==rend)
-        {
-            r1=readBuffer;
-            rend=readBuffer+fread(readBuffer,1,READ_BUFFER_SIZE,stdin);
-        }
-        return r1!=rend;
+        atexit(onStop);
     }
 
-    inline char getChar(char &s)
-    {
-        return s=hasNext()?*r1:(char)-1;
-    }
+    LanzhiStream &operator=(LanzhiStream const &stream) = default;
 
-    inline char nextChar(char &s)
-    {
-        return s=hasNext()?*r1++:(char)-1;
-    }
+    LanzhiStream(LanzhiStream const &stream) = default;
 
-    inline char getChar()
-    {
-        return hasNext()?*r1:(char)-1;
-    }
+    LanzhiStream(LanzhiStream &&stream) = default;
 
-    inline char nextChar()
-    {
-        return hasNext()?*r1++:(char)-1;
-    }
+    LanzhiStream &operator=(LanzhiStream &&stream) = default;
 
-    inline explicit operator bool() const
-    {
-        return isNormal;
-    }
-
-    inline LanzhiStream &operator>>(char &ch)
-    {
-        nextChar(ch);
-        while (ch==' '||ch=='\n'||ch=='\a'||ch=='\b'||ch=='\r'||ch=='\t'||ch=='\f'||ch=='\0')
-        {
-            nextChar(ch);
-        }
-        isNormal=(ch!=(char)-1);
-        return *this;
-    }
-
-    inline LanzhiStream &operator>>(char *x)
+    template<class Int>
+    void read_signed_int(Int &x)
     {
         char ch;
-        nextChar(ch);
-        while (ch==' '||ch=='\n'||ch=='\a'||ch=='\b'||ch=='\r'||ch=='\t'||ch=='\f'||ch=='\0')
-        {
-            nextChar(ch);
-        }
-        isNormal=(ch!=(char)-1);
-        while (!(ch==' '||ch=='\n'||ch=='\a'||ch=='\b'||ch=='\r'||ch=='\t'||ch=='\f'||ch=='\0'))
-        {
-            *x++=ch;
-            nextChar(ch);
-        }
-        *x++='\0';
-        return *this;
-    }
-
-    inline LanzhiStream &operator>>(int &x)
-    {
-        char ch;
-        int k=-1;
+        Int k=-1;
         x=0;
         nextChar(ch);
-        while (ch==' '||ch=='\n'||ch=='\a'||ch=='\b'||ch=='\r'||ch=='\t'||ch=='\f'||ch=='\0')
+        while (ch<'0'||ch>'9')
         {
-            nextChar(ch);
-        }
-        isNormal=(ch!=(char)-1);
-        if (ch=='-')
-        {
-            k=1;
             nextChar(ch);
         }
         while (!(ch<'0'||ch>'9'))
         {
-            x=(x<<3)+(x<<1)-ch+'0';
+            x=x*10-ch+'0';
             nextChar(ch);
         }
         x*=k;
-        return *this;
     }
 
-    inline LanzhiStream &operator>>(long long &x)
-    {
-        char ch;
-        int k=-1;
-        x=0;
-        nextChar(ch);
-        while (ch==' '||ch=='\n'||ch=='\a'||ch=='\b'||ch=='\r'||ch=='\t'||ch=='\f'||ch=='\0')
-        {
-            nextChar(ch);
-        }
-        isNormal=(ch!=(char)-1);
-        if (ch=='-')
-        {
-            k=1;
-            nextChar(ch);
-        }
-        while (!(ch<'0'||ch>'9'))
-        {
-            x=(x<<3)+(x<<1)-ch+'0';
-            nextChar(ch);
-        }
-        x*=k;
-        return *this;
-    }
-
-    inline LanzhiStream &operator>>(unsigned long long &x)
+    template<class Num>
+    void read_unsigned_int(Num &x)
     {
         char ch;
         x=0;
@@ -154,7 +68,6 @@ public:
         {
             nextChar(ch);
         }
-        isNormal=(ch!=(char)-1);
         if (ch=='-')
         {
             nextChar(ch);
@@ -164,23 +77,21 @@ public:
             x=(x<<3)+(x<<1)-ch+'0';
             nextChar(ch);
         }
-        return *this;
     }
 
-    inline LanzhiStream &operator>>(double &x)
+    template<class Num>
+    void read_float(Num &x)
     {
         char ch;
-        double k=-1;
+        Num k=-1;
         x=0;
         nextChar(ch);
-        while (ch==' '||ch=='\n'||ch=='\a'||ch=='\b'||ch=='\r'||ch=='\t'||ch=='\f'||ch=='\0')
+        while (ch<'0'||ch>'9')
         {
             nextChar(ch);
         }
-        isNormal=(ch!=(char)-1);
         if (ch=='-')
         {
-            k=1;
             nextChar(ch);
         }
         while (!(ch<'0'||ch>'9'))
@@ -200,57 +111,270 @@ public:
             }
         }
         x*=k;
+    }
+
+    template<class Num>
+    void print_signed_int(Num x)
+    {
+        if (x==0)
+        {
+            putChar('0');
+            return;
+        }
+        char buff[50]={},*p=buff;
+        if (x<0)
+        {
+            *(++p)=char('-');
+            while (x)
+            {
+                *(++p)=char(x%10);
+                x/=10;
+            }
+        }
+        else
+        {
+            while (x)
+            {
+                *(++p)=char(x%10);
+                x/=10;
+            }
+        }
+        while (p!=buff)
+        {
+            putChar(char('0'-*(p--)));
+        }
+    }
+
+    template<class Num>
+    void print_unsigned_int(Num x)
+    {
+        if (x==0)
+        {
+            putChar('0');
+            return;
+        }
+        char buff[50]={},*p=buff;
+        while (x)
+        {
+            *(++p)=char(x%10);
+            x/=10;
+        }
+        while (p!=buff)
+        {
+            putChar(char(*(p--)+'0'));
+        }
+    }
+
+    template<class Num>
+    void print_float(Num x)
+    {
+        print_signed_int(__int128(x));
+        if (x<0)
+        {
+            x*=-1;
+            x-=floorl(x);
+        }
+        if ((x>0&&Accuracy()>0)||(Accuracy()>0&&Force()))
+        {
+            putChar('.');
+        }
+        int cnt=0;
+        while (cnt<Accuracy()-1&&(x>0||Force()))
+        {
+            x*=10;
+            putChar(char(x+'0'));
+            x-=floorl(x);
+        }
+        x*=10;
+        if (PutMode()==1)
+        {
+            x+=0.5;
+        }
+        putChar(char(x+'0'));
+    }
+
+public:
+    static LanzhiStream &getStream()
+    {
+        static LanzhiStream stream=LanzhiStream();
+        return stream;
+    }
+
+    inline bool hasNext()
+    {
+        if (r1>=rend)
+        {
+            r1=readBuffer;
+            rend=readBuffer+fread(readBuffer,1,READ_BUFFER_SIZE,stdin);
+        }
+        return r1<rend;
+    }
+
+    inline char getChar(char &s)
+    {
+        return s=getChar();
+    }
+
+    inline char nextChar(char &s)
+    {
+        return s=nextChar();
+    }
+
+    inline char getChar()
+    {
+        return hasNext()?*r1:(char)-1;
+    }
+
+    inline char nextChar()
+    {
+        if (hasNext())
+        {
+            return *r1++;
+        }
+        isNormal=false;
+        return -1;
+    }
+    
+    inline void putChar(char s)
+    {
+        if (p1>=pend)
+        {
+            Push();
+        }
+        *p1++=s;
+    }
+
+    inline explicit operator bool() const
+    {
+        return isNormal;
+    }
+
+    inline LanzhiStream &operator>>(short &x)
+    {
+        read_signed_int(x);
+        return *this;
+    }
+
+    inline LanzhiStream &operator>>(int &x)
+    {
+        read_signed_int(x);
+        return *this;
+    }
+
+    inline LanzhiStream &operator>>(long &x)
+    {
+        read_signed_int(x);
+        return *this;
+    }
+
+    inline LanzhiStream &operator>>(long long &x)
+    {
+        read_signed_int(x);
+        return *this;
+    }
+
+    inline LanzhiStream &operator>>(__int128 &x)
+    {
+        read_signed_int(x);
+        return *this;
+    }
+
+    inline LanzhiStream &operator>>(unsigned short &x)
+    {
+        read_unsigned_int(x);
+        return *this;
+    }
+
+    inline LanzhiStream &operator>>(unsigned int &x)
+    {
+        read_unsigned_int(x);
+        return *this;
+    }
+
+    inline LanzhiStream &operator>>(unsigned long &x)
+    {
+        read_unsigned_int(x);
+        return *this;
+    }
+
+    inline LanzhiStream &operator>>(unsigned long long &x)
+    {
+        read_unsigned_int(x);
+        return *this;
+    }
+
+    inline LanzhiStream &operator>>(unsigned __int128 &x)
+    {
+        read_unsigned_int(x);
         return *this;
     }
 
     inline LanzhiStream &operator>>(float &x)
     {
-        char ch;
-        float k=-1;
-        x=0;
+        read_float(x);
+        return *this;
+    }
+
+    inline LanzhiStream &operator>>(double &x)
+    {
+        read_float(x);
+        return *this;
+    }
+
+    inline LanzhiStream &operator>>(long double &x)
+    {
+        read_float(x);
+        return *this;
+    }
+
+    inline LanzhiStream &operator>>(char &ch)
+    {
         nextChar(ch);
         while (ch==' '||ch=='\n'||ch=='\a'||ch=='\b'||ch=='\r'||ch=='\t'||ch=='\f'||ch=='\0')
         {
             nextChar(ch);
         }
-        isNormal=(ch!=(char)-1);
-        if (ch=='-')
-        {
-            k=1;
-            nextChar(ch);
-        }
-        while (!(ch<'0'||ch>'9'))
-        {
-            x=x*10-(float)ch+(float)'0';
-            nextChar(ch);
-        }
-        if (ch=='.')
-        {
-            nextChar(ch);
-            float s=10;
-            while (!(ch<'0'||ch>'9'))
-            {
-                x-=float(ch-'0')/s;
-                s*=10;
-                nextChar(ch);
-            }
-        }
-        x*=k;
         return *this;
     }
 
-    inline void pushed()
+    inline LanzhiStream &operator>>(char *x)
     {
-        if (pend==printBuffer)
+        char ch;
+        nextChar(ch);
+        while (ch==' '||ch=='\n'||ch=='\a'||ch=='\b'||ch=='\r'||ch=='\t'||ch=='\f'||ch=='\0')
         {
-            return;
+            nextChar(ch);
         }
-        fwrite(printBuffer,1,pend-printBuffer,stdout);
-        pend=printBuffer;
+        while (!(ch==' '||ch=='\n'||ch=='\a'||ch=='\b'||ch=='\r'||ch=='\t'||ch=='\f'||ch=='\0'||!isNormal))
+        {
+            *x++=ch;
+            nextChar(ch);
+        }
+        *x++='\0';
+        return *this;
+    }
+
+    inline LanzhiStream &operator>>(string &x)
+    {
+        x.clear();
+        char ch;
+        nextChar(ch);
+        while (!(ch==' '||ch=='\n'||ch=='\a'||ch=='\b'||ch=='\r'||ch=='\t'||ch=='\f'||ch=='\0'||!isNormal))
+        {
+            x=ch;
+            nextChar(ch);
+        }
+        return *this;
+    }
+
+    inline void Push()
+    {
+        fwrite(printBuffer,1,p1-printBuffer,stdout);
+        p1=printBuffer;
         fflush(stdout);
     }
 
-    inline int Accuracy(int s=-1)
+    static inline int Accuracy(int s=-1)
     {
         static int accuracy=50;
         if (s<0)
@@ -268,7 +392,7 @@ public:
         return accuracy;
     }
 
-    inline bool Force(int s=-1)
+    static inline bool Force(int s=-1)
     {
         static bool force=false;
         if (s<0)
@@ -279,7 +403,7 @@ public:
         return force;
     }
 
-    inline int PutMode(int s=-1)
+    static inline int PutMode(int s=-1)
     {
         static int putmode=1;
         if (s==1)
@@ -295,358 +419,254 @@ public:
 
     inline LanzhiStream &operator<<(char ch)
     {
-        if (pend-printBuffer>PRINT_BUFFER_SIZE-2)
-        {
-            pushed();
-        }
-        *pend++=ch;
+        putChar(ch);
         return *this;
     }
 
-    inline LanzhiStream &operator<<(char *str)
+    inline LanzhiStream &operator<<(const char *str)
     {
         while (*str!='\0')
         {
-            if (pend-printBuffer>PRINT_BUFFER_SIZE-2)
-            {
-                pushed();
-            }
-            *pend++=*str++;
+            putChar(*str++);
         }
-        if (pend-printBuffer>PRINT_BUFFER_SIZE-2)
-        {
-            pushed();
-        }
-        *pend++=' ';
+        putChar(' ');
+        return *this;
+    }
+
+    inline LanzhiStream &operator<<(short x)
+    {
+        print_signed_int(x);
+        putChar(' ');
         return *this;
     }
 
     inline LanzhiStream &operator<<(int x)
     {
-        char buff[25]={},*p=buff;
-        if (x==0)
-        {
-            if (pend-printBuffer>PRINT_BUFFER_SIZE-2)
-            {
-                pushed();
-            }
-            *pend++='0';
-        }
-        if (x<0)
-        {
-            if (pend-printBuffer>PRINT_BUFFER_SIZE-2)
-            {
-                pushed();
-            }
-            *pend++='-';
-            x*=-1;
-        }
-        while (x)
-        {
-            *(++p)=x%10;
-            x/=10;
-        }
-        while (p!=buff)
-        {
-            if (pend-printBuffer>PRINT_BUFFER_SIZE-2)
-            {
-                pushed();
-            }
-            *pend++=char(*(p--)+'0');
-        }
-        if (pend-printBuffer>PRINT_BUFFER_SIZE-2)
-        {
-            pushed();
-        }
-        *pend++=' ';
+        print_signed_int(x);
+        putChar(' ');
+        return *this;
+    }
+
+    inline LanzhiStream &operator<<(long x)
+    {
+        print_signed_int(x);
+        putChar(' ');
         return *this;
     }
 
     inline LanzhiStream &operator<<(long long x)
     {
-        char buff[50]={},*p=buff;
-        if (x==0)
-        {
-            if (pend-printBuffer>PRINT_BUFFER_SIZE-2)
-            {
-                pushed();
-            }
-            *pend++='0';
-        }
-        if (x<0)
-        {
-            if (pend-printBuffer>PRINT_BUFFER_SIZE-2)
-            {
-                pushed();
-            }
-            *pend++='-';
-            x*=-1;
-        }
-        while (x)
-        {
-            *(++p)=x%10;
-            x/=10;
-        }
-        while (p!=buff)
-        {
-            if (pend-printBuffer>PRINT_BUFFER_SIZE-2)
-            {
-                pushed();
-            }
-            *pend++=char(*(p--)+'0');
-        }
-        if (pend-printBuffer>PRINT_BUFFER_SIZE-2)
-        {
-            pushed();
-        }
-        *pend++=' ';
+        print_signed_int(x);
+        putChar(' ');
+        return *this;
+    }
+
+    inline LanzhiStream &operator<<(__int128 x)
+    {
+        print_signed_int(x);
+        putChar(' ');
+        return *this;
+    }
+
+    inline LanzhiStream &operator<<(unsigned short x)
+    {
+        print_unsigned_int(x);
+        putChar(' ');
+        return *this;
+    }
+
+    inline LanzhiStream &operator<<(unsigned int x)
+    {
+        print_unsigned_int(x);
+        putChar(' ');
+        return *this;
+    }
+
+    inline LanzhiStream &operator<<(unsigned long x)
+    {
+        print_unsigned_int(x);
+        putChar(' ');
         return *this;
     }
 
     inline LanzhiStream &operator<<(unsigned long long x)
     {
-        char buff[50]={},*p=buff;
-        if (x==0)
-        {
-            if (pend-printBuffer>PRINT_BUFFER_SIZE-2)
-            {
-                pushed();
-            }
-            *pend++='0';
-        }
-        while (x)
-        {
-            *(++p)=x%10;
-            x/=10;
-        }
-        while (p!=buff)
-        {
-            if (pend-printBuffer>PRINT_BUFFER_SIZE-2)
-            {
-                pushed();
-            }
-            *pend++=char(*(p--)+'0');
-        }
-        if (pend-printBuffer>PRINT_BUFFER_SIZE-2)
-        {
-            pushed();
-        }
-        *pend++=' ';
+        print_unsigned_int(x);
+        putChar(' ');
         return *this;
     }
 
-    inline LanzhiStream &operator<<(double x)
+    inline LanzhiStream &operator<<(unsigned __int128 x)
     {
-        long long co=x;
-        x-=co;
-        char buff[105]={},*p=buff;
-        if (co==0)
-        {
-            if (pend-printBuffer>PRINT_BUFFER_SIZE-2)
-            {
-                pushed();
-            }
-            *pend++='0';
-        }
-        if (co<0)
-        {
-            if (pend-printBuffer>PRINT_BUFFER_SIZE-2)
-            {
-                pushed();
-            }
-            *pend++='-';
-            co*=-1;
-            x*=-1;
-        }
-        while (co)
-        {
-            *(++p)=co%10;
-            co/=10;
-        }
-        while (p!=buff)
-        {
-            if (pend-printBuffer>PRINT_BUFFER_SIZE-2)
-            {
-                pushed();
-            }
-            *pend++=char(*(p--)+'0');
-        }
-        if ((x>0&&Accuracy()>0)||(Accuracy()>0&&Force()))
-        {
-            if (pend-printBuffer>PRINT_BUFFER_SIZE-2)
-            {
-                pushed();
-            }
-            *pend++='.';
-        }
-        while (p-buff<=Accuracy()&&(x>0||Force()))
-        {
-            x*=10;
-            co=x;
-            *p++=char(x+'0');
-            x-=co;
-        }
-        p--;
-        char *i=buff;
-        bool flag=false;
-        if ((*p>='5')&&PutMode()==1)
-        {
-            flag=true;
-        }
-        else if (PutMode()==2)
-        {
-            p--;
-        }
-        while (p!=buff)
-        {
-            p--;
-            if (flag&&*p=='9')
-            {
-                *p='0';
-            }
-            else if (flag)
-            {
-                *p=char(*p+1);
-                break;
-            }
-            else if (*p>'0')
-            {
-                break;
-            }
-        }
-        while ((i<=p)||((i-buff<Accuracy())&&Force()))
-        {
-            if (pend-printBuffer>PRINT_BUFFER_SIZE-2)
-            {
-                pushed();
-            }
-            *pend++=*i++;
-        }
-        if (pend-printBuffer>PRINT_BUFFER_SIZE-2)
-        {
-            pushed();
-        }
-        *pend++=' ';
+        print_unsigned_int(x);
+        putChar(' ');
         return *this;
     }
 
     inline LanzhiStream &operator<<(float x)
     {
-        if (x<0)
-        {
-            if (pend-printBuffer>PRINT_BUFFER_SIZE-2)
-            {
-                pushed();
-            }
-            *pend++='-';
-            x*=-1;
-        }
-        int co=x;
-        x-=co;
-        char buff[105]={},*p=buff;
-        if (co==0)
-        {
-            if (pend-printBuffer>PRINT_BUFFER_SIZE-2)
-            {
-                pushed();
-            }
-            *pend++='0';
-        }
-        while (co)
-        {
-            *(++p)=co%10;
-            co/=10;
-        }
-        while (p!=buff)
-        {
-            if (pend-printBuffer>PRINT_BUFFER_SIZE-2)
-            {
-                pushed();
-            }
-            *pend++=char(*(p--)+'0');
-        }
-        if ((x>0&&Accuracy()>0)||(Accuracy()>0&&Force()))
-        {
-            if (pend-printBuffer>PRINT_BUFFER_SIZE-2)
-            {
-                pushed();
-            }
-            *pend++='.';
-        }
-        while (p-buff<=Accuracy()&&(x>0||Force()))
-        {
-            x*=10;
-            co=x;
-            *p++=char(x+'0');
-            x-=co;
-        }
-        p--;
-        char *i=buff;
-        bool flag=false;
-        if ((*p>='5')&&PutMode()==1)
-        {
-            flag=true;
-        }
-        else if (PutMode()==2)
-        {
-            p--;
-        }
-        while (p!=buff)
-        {
-            p--;
-            if (flag&&*p=='9')
-            {
-                *p='0';
-            }
-            else if (flag)
-            {
-                *p=char(*p+1);
-                break;
-            }
-            else if (*p>'0')
-            {
-                break;
-            }
-        }
-        while ((i<=p)||((i-buff<Accuracy())&&Force()))
-        {
-            if (pend-printBuffer>PRINT_BUFFER_SIZE-2)
-            {
-                pushed();
-            }
-            *pend++=*i++;
-        }
-        if (pend-printBuffer>PRINT_BUFFER_SIZE-2)
-        {
-            pushed();
-        }
-        *pend++=' ';
+        print_float(x);
+        putChar(' ');
         return *this;
     }
 
-    template<typename type>
-    inline LanzhiStream &operator<<(type &e)
+    inline LanzhiStream &operator<<(double x)
     {
-        if (&e==&enter)
+        print_float(x);
+        putChar(' ');
+        return *this;
+    }
+
+    inline LanzhiStream &operator<<(long double x)
+    {
+        print_float(x);
+        putChar(' ');
+        return *this;
+    }
+
+    inline LanzhiStream &operator<=(const char *str)
+    {
+        while (*str!='\0')
         {
-            if (pend-printBuffer>PRINT_BUFFER_SIZE-2)
-            {
-                pushed();
-            }
-            *pend++='\n';
+            putChar(*str++);
         }
-        else if (&e==&push)
+        putChar(' ');
+        return *this;
+    }
+
+    inline LanzhiStream &operator<=(short x)
+    {
+        print_signed_int(x);
+        putChar(' ');
+        return *this;
+    }
+
+    inline LanzhiStream &operator<=(int x)
+    {
+        print_signed_int(x);
+        putChar(' ');
+        return *this;
+    }
+
+    inline LanzhiStream &operator<=(long x)
+    {
+        print_signed_int(x);
+        putChar(' ');
+        return *this;
+    }
+
+    inline LanzhiStream &operator<=(long long x)
+    {
+        print_signed_int(x);
+        putChar(' ');
+        return *this;
+    }
+
+    inline LanzhiStream &operator<=(__int128 x)
+    {
+        print_signed_int(x);
+        putChar(' ');
+        return *this;
+    }
+
+    inline LanzhiStream &operator<=(unsigned short x)
+    {
+        print_unsigned_int(x);
+        putChar(' ');
+        return *this;
+    }
+
+    inline LanzhiStream &operator<=(unsigned int x)
+    {
+        print_unsigned_int(x);
+        putChar(' ');
+        return *this;
+    }
+
+    inline LanzhiStream &operator<=(unsigned long x)
+    {
+        print_unsigned_int(x);
+        putChar(' ');
+        return *this;
+    }
+
+    inline LanzhiStream &operator<=(unsigned long long x)
+    {
+        print_unsigned_int(x);
+        putChar(' ');
+        return *this;
+    }
+
+    inline LanzhiStream &operator<=(unsigned __int128 x)
+    {
+        print_unsigned_int(x);
+        putChar(' ');
+        return *this;
+    }
+
+    inline LanzhiStream &operator<=(float x)
+    {
+        print_float(x);
+        putChar(' ');
+        return *this;
+    }
+
+    inline LanzhiStream &operator<=(double x)
+    {
+        print_float(x);
+        putChar(' ');
+        return *this;
+    }
+
+    inline LanzhiStream &operator<=(long double x)
+    {
+        print_float(x);
+        putChar(' ');
+        return *this;
+    }
+
+    inline LanzhiStream &operator<<(StreamOperator *e)
+    {
+        if (e==enter)
         {
-            pushed();
+            putChar('\n');
+        }
+        else if (e==push)
+        {
+            Push();
         }
         return *this;
     }
+
+#undef READ_BUFFER_SIZE
+#undef PRINT_BUFFER_SIZE
 };
 
-typedef long long ll;
-typedef unsigned long long ull;
+LanzhiStream &stream=LanzhiStream::getStream();
 
 int main()
 {
+    stream<="                ********\n"
+            "               ************\n"
+            "               ####....#.\n"
+            "             #..###.....##....\n"
+            "             ###.......######              ###            ###\n"
+            "                ...........               #...#          #...#\n"
+            "               ##*#######                 #.#.#          #.#.#\n"
+            "            ####*******######             #.#.#          #.#.#\n"
+            "           ...#***.****.*###....          #...#          #...#\n"
+            "           ....**********##.....           ###            ###\n"
+            "           ....****    *****....\n"
+            "             ####        ####\n"
+            "           ######        ######\n"
+            "##############################################################\n"
+            "#...#......#.##...#......#.##...#......#.##------------------#\n"
+            "###########################################------------------#\n"
+            "#..#....#....##..#....#....##..#....#....#####################\n"
+            "##########################################    #----------#\n"
+            "#.....#......##.....#......##.....#......#    #----------#\n"
+            "##########################################    #----------#\n"
+            "#.#..#....#..##.#..#....#..##.#..#....#..#    #----------#\n"
+            "##########################################    ############\n";
     return 0;
 }

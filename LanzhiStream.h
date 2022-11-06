@@ -635,4 +635,4 @@ public:
         }
         return *this;
     }
-}stream;
+};
