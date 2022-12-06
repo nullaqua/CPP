@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+//https://www.luogu.com.cn/problem/P1352
 
 using namespace std;
 typedef long long ll;
@@ -11,7 +12,7 @@ class StreamOperator
 StreamOperator *push=new StreamOperator();
 StreamOperator *enter=new StreamOperator();
 
-class LanzhiStream
+class LanzhiStream :istream,ostream
 {
 #define READ_BUFFER_SIZE 100000LL
 #define PRINT_BUFFER_SIZE 100000LL
@@ -20,9 +21,6 @@ private:
     char printBuffer[PRINT_BUFFER_SIZE]{},*p1=printBuffer;
     const char *pend=printBuffer+PRINT_BUFFER_SIZE;
     bool isNormal=true;
-    int accuracy=50;
-    bool force=false;
-    int putmode=1;
 
     static void onStop()
     {
@@ -34,6 +32,22 @@ private:
         atexit(onStop);
     }
 
+    LanzhiStream &operator=(LanzhiStream const &stream)
+    {
+    }
+
+    LanzhiStream(LanzhiStream const &stream)
+    {
+    }
+
+    LanzhiStream(LanzhiStream &&stream)
+    {
+    }
+
+    LanzhiStream &operator=(LanzhiStream &&stream)
+    {
+    }
+
     template<class Int>
     void read_signed_int(Int &x)
     {
@@ -41,16 +55,13 @@ private:
         Int k=-1;
         x=0;
         nextChar(ch);
-        while (ch<'0'||ch>'9')
+        while (ch==' '||ch=='\n'||ch=='\a'||ch=='\b'||ch=='\r'||ch=='\t'||ch=='\f'||ch=='\0')
         {
-            if (ch=='-')
-            {
-                k=1;
-            }
-            else
-            {
-                k=-1;
-            }
+            nextChar(ch);
+        }
+        if (ch=='-')
+        {
+            k=1;
             nextChar(ch);
         }
         while (!(ch<'0'||ch>'9'))
@@ -87,14 +98,10 @@ private:
         nextChar(ch);
         while (ch<'0'||ch>'9')
         {
-            if (ch=='-')
-            {
-                k=1;
-            }
-            else
-            {
-                k=-1;
-            }
+            nextChar(ch);
+        }
+        if (ch=='-')
+        {
             nextChar(ch);
         }
         while (!(ch<'0'||ch>'9'))
@@ -127,7 +134,7 @@ private:
         char buff[50]={},*p=buff;
         if (x<0)
         {
-            putChar('-');
+            *(++p)=char('-');
             while (x)
             {
                 *(++p)=char(x%10);
@@ -181,19 +188,19 @@ private:
             x*=-1;
             x-=floorl(x);
         }
-        if ((x>0&&accuracy>0)||(accuracy>0&&force))
+        if ((x>0&&Accuracy()>0)||(Accuracy()>0&&Force()))
         {
             putChar('.');
         }
         int cnt=0;
-        while (cnt<accuracy-1&&(x>0||force))
+        while (cnt<Accuracy()-1&&(x>0||Force()))
         {
             x*=10;
             putChar(char(x+'0'));
             x-=floorl(x);
         }
         x*=10;
-        if (putmode==1)
+        if (PutMode()==1)
         {
             x+=0.5;
         }
@@ -201,17 +208,9 @@ private:
     }
 
 public:
-    LanzhiStream &operator=(LanzhiStream const &)=delete;
-
-    LanzhiStream(LanzhiStream const &)=delete;
-
-    LanzhiStream(LanzhiStream &&)=delete;
-
-    LanzhiStream &operator=(LanzhiStream &&)=delete;
-
-    static LanzhiStream& getStream()
+    static LanzhiStream &getStream()
     {
-        static LanzhiStream stream;
+        static LanzhiStream stream=LanzhiStream();
         return stream;
     }
 
@@ -376,36 +375,10 @@ public:
         nextChar(ch);
         while (!(ch==' '||ch=='\n'||ch=='\a'||ch=='\b'||ch=='\r'||ch=='\t'||ch=='\f'||ch=='\0'||!isNormal))
         {
-            x+=ch;
+            x=ch;
             nextChar(ch);
         }
         return *this;
-    }
-
-    inline LanzhiStream &getLine(string &x)
-    {
-        x.clear();
-        char ch;
-        nextChar(ch);
-        while (!(ch=='\n'||ch=='\r'||!isNormal))
-        {
-            x+=ch;
-            nextChar(ch);
-        }
-        return *this;
-    }
-
-    inline string getLine()
-    {
-        string x;
-        char ch;
-        nextChar(ch);
-        while (!(ch=='\n'||ch=='\r'||!isNormal))
-        {
-            x+=ch;
-            nextChar(ch);
-        }
-        return x;
     }
 
     inline void Push()
@@ -415,8 +388,13 @@ public:
         fflush(stdout);
     }
 
-    inline void Accuracy(int s)
+    static inline int Accuracy(int s=-1)
     {
+        static int accuracy=50;
+        if (s<0)
+        {
+            return accuracy;
+        }
         if (accuracy>100)
         {
             accuracy=100;
@@ -425,16 +403,32 @@ public:
         {
             accuracy=s;
         }
+        return accuracy;
     }
 
-    inline void Force(bool s)
+    static inline bool Force(int s=-1)
     {
-        force=s;
+        static bool force=false;
+        if (s<0)
+        {
+            return force;
+        }
+        force=(s!=0);
+        return force;
     }
 
-    inline void PutMode(int s)
+    static inline int PutMode(int s=-1)
     {
-        putmode=s;
+        static int putmode=1;
+        if (s==1)
+        {
+            putmode=1;
+        }
+        else if (s==2)
+        {
+            putmode=2;
+        }
+        return putmode;
     }
 
     inline LanzhiStream &operator<<(char ch)
@@ -544,15 +538,6 @@ public:
         return *this;
     }
 
-    inline LanzhiStream &operator<<(const string& x)
-    {
-        for (char s:x)
-        {
-            putChar(s);
-        }
-        return *this;
-    }
-
     inline LanzhiStream &operator<=(const char *str)
     {
         while (*str!='\0')
@@ -654,16 +639,6 @@ public:
         return *this;
     }
 
-    inline LanzhiStream &operator<=(const string& x)
-    {
-        for (char s:x)
-        {
-            putChar(s);
-        }
-        putChar(' ');
-        return *this;
-    }
-
     inline LanzhiStream &operator<<(StreamOperator *e)
     {
         if (e==enter)
@@ -676,18 +651,63 @@ public:
         }
         return *this;
     }
+
 #undef READ_BUFFER_SIZE
 #undef PRINT_BUFFER_SIZE
 };
 
 LanzhiStream &io=LanzhiStream::getStream();
 
+int n;
+int a[6003];
+
+struct EDGE
+{
+    int v,next;
+}edge[12005];
+int ed;
+int head[6003];
+void add(int u,int v)
+{
+    edge[++ed].v=v;
+    edge[ed].next=head[u];
+    head[u]=ed;
+}
+
+int dp[6003][2];
+
+void dfs(int u,int fa)
+{
+    dp[u][1]+=a[u];
+    for (int i=head[u];i;i=edge[i].next)
+    {
+        int v=edge[i].v;
+        if (v==fa)
+        {
+            continue;
+        }
+        dfs(v,u);
+        dp[u][1]+=dp[v][0];
+        dp[u][0]+=max(dp[v][1],dp[v][0]);
+    }
+    //io<<u<<dp[u][0]<<dp[u][1]<<'\n';
+}
+
 int main()
 {
-    string x;
-    while (io.getLine(x))
+    io>>n;
+    for (int i=1;i<=n;i++)
     {
-        (io<=x)<<'\n';
+        io>>a[i];//<<a[i];
     }
+    for (int i=1;i<n;i++)
+    {
+        int u,v;
+        io>>u>>v;
+        add(u,v);
+        add(v,u);
+    }
+    dfs(1,0);
+    io<<max(dp[1][1],dp[1][0]);
     return 0;
 }

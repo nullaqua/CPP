@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+//https://www.luogu.com.cn/problem/CF1187E
 
 using namespace std;
 typedef long long ll;
@@ -201,19 +202,13 @@ private:
     }
 
 public:
-    LanzhiStream &operator=(LanzhiStream const &)=delete;
+    LanzhiStream &operator=(LanzhiStream const &) = delete;
 
-    LanzhiStream(LanzhiStream const &)=delete;
+    LanzhiStream(LanzhiStream const &) = delete;
 
-    LanzhiStream(LanzhiStream &&)=delete;
+    LanzhiStream(LanzhiStream &&) = delete;
 
-    LanzhiStream &operator=(LanzhiStream &&)=delete;
-
-    static LanzhiStream& getStream()
-    {
-        static LanzhiStream stream;
-        return stream;
-    }
+    LanzhiStream &operator=(LanzhiStream &&) = delete;
 
     inline bool hasNext()
     {
@@ -544,7 +539,7 @@ public:
         return *this;
     }
 
-    inline LanzhiStream &operator<<(const string& x)
+    inline LanzhiStream &operator<<(const string &x)
     {
         for (char s:x)
         {
@@ -654,7 +649,7 @@ public:
         return *this;
     }
 
-    inline LanzhiStream &operator<=(const string& x)
+    inline LanzhiStream &operator<=(const string &x)
     {
         for (char s:x)
         {
@@ -676,18 +671,83 @@ public:
         }
         return *this;
     }
+
+    static LanzhiStream &getStream()
+    {
+        static auto *stream=new LanzhiStream();
+        return *stream;
+    }
+
 #undef READ_BUFFER_SIZE
 #undef PRINT_BUFFER_SIZE
 };
 
 LanzhiStream &io=LanzhiStream::getStream();
 
+struct EDGE
+{
+    int v,next;
+}edge[400005];
+int ed;
+int head[200005];
+
+void add(int u,int v)
+{
+    edge[++ed].v=v;
+    edge[ed].next=head[u];
+    head[u]=ed;
+}
+
+int n;
+ll dp[200005];
+ll ans[200005];
+ll siz[200005];
+
+void dfs(int u,int fa)
+{
+    siz[u]+=1;
+    for (int i=head[u];i;i=edge[i].next)
+    {
+        int v=edge[i].v;
+        if (v==fa)
+        {
+            continue;
+        }
+        dfs(v,u);
+        siz[u]+=siz[v];
+        dp[u]+=dp[v];
+    }
+    dp[u]+=siz[u];
+}
+
+void dfs1(int u,int fa)
+{
+    for (int i=head[u];i;i=edge[i].next)
+    {
+        int v=edge[i].v;
+        if (v==fa)
+        {
+            continue;
+        }
+        ans[v]=ans[u]+n-siz[v]-siz[v];
+        dfs1(v,u);
+    }
+}
+
 int main()
 {
-    string x;
-    while (io.getLine(x))
+    io>>n;
+    for (int i=1;i<n;i++)
     {
-        (io<=x)<<'\n';
+        int x,y;
+        io>>x>>y;
+        add(x,y);
+        add(y,x);
     }
+
+    dfs(1,0);
+    ans[1]=dp[1];
+    dfs1(1,0);
+    io<<*max_element(ans+1,ans+n+1);
     return 0;
 }
