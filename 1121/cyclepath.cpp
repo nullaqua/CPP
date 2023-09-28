@@ -11,6 +11,7 @@ struct EDGE
 }edge[3005];
 int ed;
 int head[3005];
+
 void add(int u,int v,int w)
 {
     edge[++ed].v=v;
@@ -27,8 +28,12 @@ struct Node
 {
     int u,k;
     ll len;
-    Node(int u,int k,ll len):u(u),k(k),len(len){}
-    bool operator<(const Node &o)const
+
+    Node(int u,int k,ll len) : u(u),k(k),len(len)
+    {
+    }
+
+    bool operator<(const Node &o) const
     {
         return o.len<len;
     }
@@ -73,21 +78,5 @@ void dij()
 
 int main()
 {
-    int cnt=0;
-    int sum=1;
-    int c=clock()+1000;
-    while (clock()<=c)
-    {
-        ++cnt;
-        if (cnt&1)
-        {
-            sum*=2;
-        }
-        else
-        {
-            sum/=2;
-        }
-    }
-    cerr<<cnt<<' '<<sum;
     return 0;
 }
